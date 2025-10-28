@@ -16,13 +16,19 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework.response import Response
 from rest_framework import status
 from PIL import Image
-import openai
+from openai import OpenAI
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 # Initialize OpenAI client
-openai.api_key = settings.OPENAI_API_KEY
+client = OpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
+
+# Log client initialization
+if client:
+    logger.info("OpenAI client initialized successfully")
+else:
+    logger.warning("OpenAI client NOT initialized - API key missing")
 
 class ImageAnalyzer:
     """Handles image analysis and recipe generation using OpenAI Vision API"""
@@ -77,7 +83,11 @@ class ImageAnalyzer:
                     }
                 })
             
-            response = openai.chat.completions.create(
+            logger.info(f"Calling OpenAI with {len(images)} images")
+            logger.info(f"API Key present: {bool(settings.OPENAI_API_KEY)}")
+            logger.info(f"Content structure: {content[0]['type']}")
+            
+            response = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
                     {
@@ -135,7 +145,7 @@ class ImageAnalyzer:
             Return only a JSON array of 3 recipe objects, no other text.
             """
             
-            response = openai.chat.completions.create(
+            response = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
                     {
