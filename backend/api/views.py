@@ -88,7 +88,7 @@ class ImageAnalyzer:
             logger.info(f"Content structure: {content[0]['type']}")
             
             response = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4.1-mini",
                 messages=[
                     {
                         "role": "user",
@@ -145,6 +145,7 @@ class ImageAnalyzer:
             Return only a JSON array of 3 recipe objects, no other text.
             """
             
+            """
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
@@ -182,6 +183,7 @@ class ImageAnalyzer:
                     "timeMinutes": 0
                 }]
                 
+                """
         except Exception as e:
             logger.error(f"Error generating recipes: {str(e)}")
             raise Exception(f"Failed to generate recipes: {str(e)}")
